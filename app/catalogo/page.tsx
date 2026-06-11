@@ -5,16 +5,17 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Search, Filter, Heart, ShoppingBag } from "lucide-react"
+import { Search, Filter, Heart, ShoppingBag} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useEffect } from "react"
+import Link from "next/link"
 
 
 
 const categories = [
   { id: "todos", name: "Todos" },
   { id: "rosas", name: "Rosas" },
-  { id: "tulipanes", name: "Tulipanes" },
+  { id: "tulipanes", name: "Tulipanes" }, 
   { id: "girasoles", name: "Girasoles" },
   { id: "mixtos", name: "Mixtos" },
   { id: "ocasiones", name: "Ocasiones" },
@@ -168,7 +169,7 @@ export default function CatalogoPage() {
 
 // Convertir la respuesta en JSON
     const media = await res.json()
-    console.log("Media recibida del backend:", media)
+    
 
 // Ahora `media` contiene el array de imágenes
     return media
@@ -176,11 +177,11 @@ export default function CatalogoPage() {
 
   useEffect(() => {
     const loadProducts = async () => {
-      const data = await fetchProducts()
+      const data = await fetchProducts()  
 
       // 👇 aquí asignamos solo la URL al campo image
       const productosConImagen = data.map((item: any) => ({
-        id: item.id,
+        id: item.productos?.idProductos,
         image: item.url,
         name: item.productos?.nombre,
         description: item.productos?.descripcion,
@@ -280,73 +281,87 @@ export default function CatalogoPage() {
             </Button>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredProducts.map((product) => (
-              <Card
-                key={product.id}
-                className="group relative overflow-hidden border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg"
-              >
-                {/* Badges */}
-                <div className="absolute left-3 top-3 z-10 flex flex-col gap-2">
-                  {product.isNew && (
-                    <Badge className="bg-primary text-primary-foreground">
-                      Nuevo
-                    </Badge>
-                  )}
-                  {product.isSale && (
-                    <Badge variant="destructive">Oferta</Badge>
-                  )}
-                </div>
-
-                {/* Favorite Button */}
-                <button
-                  onClick={() => toggleFavorite(product.id)}
-                  className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 transition-all hover:bg-background"
+              
+                <Link
+                  key={product.id}
+                  href={`/catalogoDetail/${product.id}`}
+                  className="block"
                 >
-                  <Heart
-                    className={cn(
-                      "h-4 w-4 transition-colors",
-                      favorites.includes(product.id)
-                        ? "fill-primary text-primary"
-                        : "text-muted-foreground"
+                <Card className="group relative overflow-hidden border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg">
+                  {/* Badges */}
+                  <div className="absolute left-3 top-3 z-10 flex flex-col gap-2">
+                    {product.isNew && (
+                      <Badge className="bg-primary text-primary-foreground">
+                        Nuevo
+                      </Badge>
                     )}
-                  />
-                </button>
-
-                {/* Image */}
-                <div className="flex h-68 items-center justify-center bg-secondary/30 text-7xl transition-transform group-hover:scale-105">
-                  <img src={product.image}  className="w-45 h-65  object-cover rounded-lg" />
-                </div>
-
-
-                <CardContent className="p-4">
-                  <h3 className="font-serif text-lg font-semibold text-foreground">
-                    {product.name}
-                  </h3>
-                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                    {product.description}
-                  </p>
-                  <div className="mt-4 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="font-serif text-xl font-bold text-primary">
-                        ${product.price}
-                      </span>
-                      {product.originalPrice && (
-                        <span className="text-sm text-muted-foreground line-through">
-                          ${product.originalPrice}
-                        </span>
-                      )}
-                    </div>
-                    <Button
-                      size="sm"
-                      className="bg-primary text-primary-foreground hover:bg-primary/90"
-                    >
-                      <ShoppingBag className="mr-1 h-4 w-4" />
-                      Agregar
-                    </Button>
+                    {product.isSale && (
+                      <Badge variant="destructive">Oferta</Badge>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
+                  
+                  {/* Favorite Button */}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault(); // evita que el click en el botón dispare el Link
+                      toggleFavorite(product.id);
+                    }}
+                    className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 transition-all hover:bg-background"
+                  >
+                    <Heart
+                      className={cn(
+                        "h-4 w-4 transition-colors",
+                        favorites.includes(product.id)
+                          ? "fill-primary text-primary"
+                          : "text-muted-foreground"
+                      )}
+                    />
+                  </button>
+                    
+                  {/* Image */}
+                  <div className="flex h-68 items-center justify-center bg-secondary/30 text-7xl transition-transform group-hover:scale-105">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-45 h-65 object-cover rounded-lg"
+                    />
+                  </div>
+                    
+                  <CardContent className="p-4">
+                    <h3 className="font-serif text-lg font-semibold text-foreground">
+                      {product.name}
+                    </h3>
+                    <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                      {product.description}
+                    </p>
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-serif text-xl font-bold text-primary">
+                          ${product.price}
+                        </span>
+                        {product.originalPrice && (
+                          <span className="text-sm text-muted-foreground line-through">
+                            ${product.originalPrice}
+                          </span>
+                        )}
+                      </div>
+                      <Button
+                        size="sm"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                        onClick={(e) => {
+                          e.preventDefault(); // evita navegación si solo quieres agregar
+                          // lógica de agregar al carrito
+                        }}
+                      >
+                        <ShoppingBag className="mr-1 h-4 w-4" />
+                        Agregar
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
 
