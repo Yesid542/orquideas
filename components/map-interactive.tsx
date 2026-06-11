@@ -8,7 +8,7 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 export default function MapInteractive() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const marker = useRef<mapboxgl.Marker | null>(null); // referencia al marcador
+  const markersAdded = useRef(false);
 
   useEffect(() => {
     if (map.current) return;
@@ -20,31 +20,46 @@ export default function MapInteractive() {
       zoom: 1,
     });
 
-    map.current.on("click", () => {
-      // animación hacia Boyacá
-      map.current?.flyTo({
-        center: [-73.1460407752655, 5.196067806433879],
-        zoom: 15,
-        speed: 1.2,
-        curve: 1,
-        essential: true,
-      });
+    // 👀 Intersection Observer: detecta cuando el mapa entra en pantalla
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !markersAdded.current) {
+          // animación hacia Boyacá
+          map.current?.flyTo({
+            center: [-73.1460407752655, 5.196067806433879],
+            zoom: 15,
+            speed: 1.2,
+            curve: 1,
+            essential: true,
+          });
 
-      // crea el marcador solo si aún no existe
-      if (!marker.current) {
-        marker.current = new mapboxgl.Marker({ color: "#c51a8c" })
-          .setLngLat([-73.1460407752655, 5.196067806433879])
-          .setPopup(new mapboxgl.Popup().setText("Justo Aquí"))
-          .addTo(map.current!)
-          .togglePopup(); // abre el popup al primer clic
-  
-        marker.current = new mapboxgl.Marker({ color: "#c51a8c" })
-          .setLngLat([-73.14388413438463, 5.19586008805078])
-          .setPopup(new mapboxgl.Popup().setText("Y aquí"))
-          .addTo(map.current!)
-          .togglePopup(); // abre el popup al primer clic
-      }
-    });
+          // marcador 1
+          new mapboxgl.Marker({ color: "#c51a8c" })
+            .setLngLat([-73.1460407752655, 5.196067806433879])
+            .setPopup(new mapboxgl.Popup().setText("Justo Aquí"))
+            .addTo(map.current!)
+            .togglePopup();
+
+          // marcador 2
+          new mapboxgl.Marker({ color: "#c51a8c" })
+            .setLngLat([-73.14388413438463, 5.19586008805078])
+            .setPopup(new mapboxgl.Popup().setText("Y aquí"))
+            .addTo(map.current!)
+            .togglePopup();
+
+          markersAdded.current = true; // evita que se repita
+        }
+      },
+      { threshold: 0.5 } // se activa cuando el 50% del mapa es visible
+    );
+
+    if (mapContainer.current) {
+      observer.observe(mapContainer.current);
+    }
+
+    return () => {
+      if (mapContainer.current) observer.unobserve(mapContainer.current);
+    };
   }, []);
 
   return (
