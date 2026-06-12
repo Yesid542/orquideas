@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Instagram, Facebook, Twitter } from "lucide-react"
+import { Instagram, Facebook } from "lucide-react"
 
 const footerLinks = {
   navegacion: [
@@ -9,7 +9,7 @@ const footerLinks = {
   ],
   empresa: [
     { name: "Acerca de", href: "/acerca" },
-    { name: "Contacto", href: "/contacto" },
+    { name: "Contacto", href: "/eventos#contacto" },
     { name: "Blog", href: "/blog" },
   ],
   legal: [
@@ -129,7 +129,9 @@ export default function Footer() {
         {/* Bottom */}
         <div className="mt-12 border-t border-border pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            © 2026 Orquideas. Todos los derechos reservados.
+            © 2026 Orquideas. Elaborado por <a href="https://yesid542.github.io/miportafolio/" className="text-primary hover:underline">
+              YE'S Software.
+            </a>
           </p>
         </div>
       </div>

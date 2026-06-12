@@ -313,7 +313,7 @@ export default function EventosPage() {
       </section>
 
       {/* Contact Form */}
-      <section className="border-t border-border bg-secondary/30 py-16 lg:py-24">
+      <section className="border-t border-border bg-secondary/30 py-16 lg:py-24" id="contacto">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-2">
             {/* Form */}
@@ -439,8 +439,8 @@ export default function EventosPage() {
                         <Phone className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Teléfono</p>
-                        <p className="font-medium text-foreground">3112622399</p>
+                        <p className="text-sm text-muted-foreground">Teléfonos</p>
+                        <p className="font-medium text-foreground">311 262 23 99 - 322 833 76 35 - </p>
                       </div>
                     </div>
 

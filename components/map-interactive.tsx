@@ -60,7 +60,7 @@ export default function MapInteractive() {
     return () => {
       if (mapContainer.current) observer.unobserve(mapContainer.current);
     };
-  }, []);
+  }, []); 
 
   return (
     <section id="mapinteractive" className="border-y border-border bg-card py-12">

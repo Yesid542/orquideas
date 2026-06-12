@@ -24,7 +24,7 @@ export async function GET() {
       )
     `)
     .eq("tipo", "img") // condición fija
-    .not("idEventos", "is", null) // join hacia eventos
+    .not("idEventos", "is", null) 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

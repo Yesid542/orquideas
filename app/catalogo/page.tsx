@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Search, Filter, Heart, ShoppingBag} from "lucide-react"
+import { Search, Filter, Heart, ShoppingBag, Sparkles} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useEffect } from "react"
 import Link from "next/link"
@@ -220,9 +220,14 @@ export default function CatalogoPage() {
        <section className="relative overflow-hidden bg-secondary/30 min-h-screen pt-16 lg:pt-24 flex items-center">
     {/* Fondo decorativo */}
         <div className="container mx-auto px-4 lg:px-8">
+          
           <div className="mx-auto max-w-2xl text-center">
+              <Badge variant="outline" className="mb-6 border-primary/30 text-primary">
+          <Sparkles className="mr-1 h-3 w-3" />
+          Nuestro Catálogo
+        </Badge>
             <h1 className="font-serif text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-              Nuestro Catálogo
+              Escoge el que mas te guste <span className="text-primary">y hazlo tuyo</span>
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
               Descubre nuestra colección de arreglos florales para cada ocasión

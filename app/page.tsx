@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ArrowRight, Sparkles, Truck, Shield, Clock } from "lucide-react"
 import BouquetBuilder from "@/components/bouquet-builder"
 import MapInteractive from "@/components/map-interactive"
+import CampaniaModal from "@/components/campaniaModal";
 
 type Popular = {
   id: number
@@ -100,7 +101,9 @@ const [elegidos, setElegidos] = useState<Popular[]>([])
 
 
   return (
+    
     <div className="flex flex-col">
+      <CampaniaModal />
       {/* Hero Section */}
      <section id="hero" className="relative min-h-screen bg-cover bg-center flex items-center justify-center"
       style={{
