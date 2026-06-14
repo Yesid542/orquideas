@@ -29,7 +29,6 @@ export default function CampaniaModal() {
       <div className="bg-white rounded-lg shadow-lg p-6 relative max-w-md">
         <img
           src={campania.url}
-          alt={campania.campanias.titulo}
           className="rounded-md mb-4"
         />
         <button

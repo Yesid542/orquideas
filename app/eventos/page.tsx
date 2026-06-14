@@ -156,10 +156,18 @@ export default function EventosPage() {
     message: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Form submitted:", formData)
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const res = await fetch("/api/send-form", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(formData),
+  });
+
+  const data = await res.json();
+  alert(data.message);
+};
 
   return (
     <div className="min-h-screen bg-background">
@@ -389,8 +397,8 @@ export default function EventosPage() {
                       <SelectValue placeholder="Selecciona un tipo de evento" />
                     </SelectTrigger>
                     <SelectContent>
-                      {eventTypes.map((event) => (
-                        <SelectItem key={event.id} value={event.id}>
+                      {evento.map((event) => (
+                        <SelectItem key={event.id} value={event.title}>
                           {event.title}
                         </SelectItem>
                       ))}
