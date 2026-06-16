@@ -17,24 +17,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Florelia | Floristería Artesanal',
+  title: 'Orquideas | Floristería y eventos',
   description: 'Crea ramos personalizados, explora nuestro catálogo y decora tus eventos con las flores más hermosas.',
   generator: 'v0.app',
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
+    icon: "/preview.png",
     apple: '/apple-icon.png',
   },
 }

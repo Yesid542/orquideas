@@ -11,8 +11,8 @@ export async function POST(req: Request) {
       port: 587,
       secure: false, // true si usas puerto 465
       auth: {
-        user: process.env.SMTP_USER, // variable de entorno en Vercel
-        pass: process.env.SMTP_PASS, // contraseña de aplicación
+       user: "yesidbarreto24@gmail.com", // variable de entorno en Vercel
+        pass: "eelq yswd tzfr nvan"// contraseña de aplicación
       },
     });
 
