@@ -81,9 +81,11 @@ export default function Header() {
           <Button variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>
             <User className="h-5 w-5" />
           </Button>
+          <Link href="/loginPage">
           <Button className="ml-2 bg-primary text-primary-foreground hover:bg-primary/90">
             Iniciar Sesión
           </Button>
+          </Link>
         </div>
 
         {/* Mobile Menu */}
@@ -133,11 +135,13 @@ export default function Header() {
                   <User className="h-5 w-5" />
                   Mi cuenta
                 </Link>
-
+                
                 {/* Botón Iniciar Sesión separado */}
-                <Button className="mt-6 ml-8' w-50 bg-primary text-primary-foreground hover:bg-primary/90">
-                  Iniciar Sesión
-                </Button>
+                <Link href="/loginPage" onClick={() => setIsOpen(false)} className="w-full">
+                  <Button className="mt-6 w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                    Iniciar Sesión
+                  </Button>
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>
