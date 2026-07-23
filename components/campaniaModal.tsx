@@ -21,7 +21,6 @@ export default function CampaniaModal() {
     fetchCampania();
   }, []);
 
-  console.log("Campaña obtenida:", campania);
   if (!campania || !show) return null;
 
   return (

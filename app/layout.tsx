@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
+import { AuthProvider } from "@/context/AuthContext";
 
 const cormorant = Cormorant_Garamond({ 
   subsets: ["latin"],
@@ -34,12 +35,14 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${cormorant.variable} ${inter.variable} bg-background`}>
       <body className="font-sans antialiased">
-        <Header />
-        <main className="min-h-screen ">
-          {children}
-        </main>
-        <Footer />
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <AuthProvider>
+          <Header />
+          <main className="min-h-screen ">
+            {children}
+          </main>
+          <Footer />
+          {process.env.NODE_ENV === 'production' && <Analytics />}
+        </AuthProvider>
       </body>
     </html>
   )

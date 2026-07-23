@@ -1,10 +1,14 @@
 "use client"
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
+  const [respuesta, setRespuesta ] = useState<string | null>(null);     
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -14,9 +18,7 @@ export default function LoginPage() {
       email: formData.get("email"),
       password: formData.get("password"),
     };
-  
-    console.log("Datos del formulario:", data);
-  
+    
     // Enviar al backend
     const response = await fetch("/api/users/login", {
       method: "POST",
@@ -27,10 +29,12 @@ export default function LoginPage() {
     const result = await response.json();
     if (!response.ok) {
       console.error("Error en la respuesta del servidor:", result);
-      alert(`Error: ${result.error}`);
-      return;``
+      if (result.error=="Invalid login credentials") {
+        setRespuesta(`Revise su correo o contraseña suministrados`);
+      }
+      return;
     }
-
+    login();
     router.push("/");
   };
 
@@ -44,6 +48,12 @@ export default function LoginPage() {
 
         {/* Formulario */}
         <form className="space-y-6" onSubmit={handleSubmit}>
+        {respuesta && (
+          <div className="text-red-500 text-sm">
+            {respuesta}
+          </div>
+        )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700">Correo electrónico</label>
             <input

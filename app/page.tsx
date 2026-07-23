@@ -74,9 +74,6 @@ const [elegidos, setElegidos] = useState<Popular[]>([])
 // Convertir la respuesta en JSON
     const media = await res.json()
     const randomFive = media.sort(() => 0.5 - Math.random()).slice(0, 5);
-
-    console.log("Media recibida del backend:", media)
-
 // Ahora `media` contiene el array de imágenes
   return randomFive
   }

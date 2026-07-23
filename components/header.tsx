@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, ShoppingBag, User, Heart } from "lucide-react"
 import { Cookie } from "next/font/google"
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 const cookie = Cookie({
   subsets: ["latin"],
@@ -21,26 +29,32 @@ const navigation = [
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [isOverHero, setIsOverHero] = useState(true)
+  const { isAuthenticated, logout } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
-    const hero = document.querySelector("#hero")
-    if (!hero) {
-      setIsOverHero(false)
-      return
-    }
-
+  // --- Observer para el hero ---
+  const hero = document.querySelector("#hero");
+  if (!hero) {
+    setIsOverHero(false);
+  } else {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          setIsOverHero(entry.isIntersecting)
-        })
+          setIsOverHero(entry.isIntersecting);
+        });
       },
       { root: null, threshold: 0.15 }
-    )
+    );
 
-    observer.observe(hero)
-    return () => observer.disconnect()
-  }, [])
+    observer.observe(hero);
+    // cleanup
+    return () => observer.disconnect();
+  }
+
+  
+  
+}, []);
 
   return (
     <header
@@ -78,14 +92,36 @@ export default function Header() {
           <Button variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>
             <ShoppingBag className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>
-            <User className="h-5 w-5" />
-          </Button>
-          <Link href="/loginPage">
-          <Button className="ml-2 bg-primary text-primary-foreground hover:bg-primary/90">
-            Iniciar Sesión
-          </Button>
-          </Link>
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost">Perfil</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => router.push("/account")}>
+                  Mi cuenta
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/settings")}>
+                  Configuración
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    logout();
+                    router.push("/");
+                  }}
+                  className="text-red-500"
+                >
+                  Cerrar sesión
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link href="/loginPage">
+              <Button className="ml-2 bg-primary text-primary-foreground hover:bg-primary/90">
+                Iniciar sesión
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu */}
@@ -125,9 +161,21 @@ export default function Header() {
                   <Heart className="h-5 w-5" />
                   Favoritos
                 </Link>
-
-                {/* Mi cuenta */}
-                <Link
+                
+                {/* Botón Iniciar Sesión separado */}
+                {isAuthenticated ? (
+                  <>
+                  <Button
+                    onClick={() => {
+                      logout();
+                      router.push("/");
+                      setIsOpen(false);
+                    }}
+                    className="mt-6 w-full bg-red-500 text-white hover:bg-red-600"
+                  >
+                    Cerrar Sesión
+                  </Button>
+                  <Link
                   href="#"
                   onClick={() => setIsOpen(false)}
                   className="flex items-center gap-2 text-muted-foreground hover:text-primary"
@@ -135,13 +183,14 @@ export default function Header() {
                   <User className="h-5 w-5" />
                   Mi cuenta
                 </Link>
-                
-                {/* Botón Iniciar Sesión separado */}
-                <Link href="/loginPage" onClick={() => setIsOpen(false)} className="w-full">
-                  <Button className="mt-6 w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                    Iniciar Sesión
-                  </Button>
-                </Link>
+                </>
+                ) : (
+                  <Link href="/loginPage" onClick={() => setIsOpen(false)} className="w-full">
+                    <Button className="mt-6 w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                      Iniciar Sesión
+                    </Button>
+                  </Link>
+                )}
               </nav>
             </SheetContent>
           </Sheet>
