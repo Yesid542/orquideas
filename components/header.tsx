@@ -8,6 +8,7 @@ import { Menu, ShoppingBag, User, Heart } from "lucide-react"
 import { Cookie } from "next/font/google"
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/context/CartContext";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -27,6 +28,7 @@ const navigation = [
 ]
 
 export default function Header() {
+  const { setIsOpenCart } = useCart();
   const [isOpen, setIsOpen] = useState(false)
   const [isOverHero, setIsOverHero] = useState(true)
   const { isAuthenticated, logout } = useAuth();
@@ -86,7 +88,7 @@ export default function Header() {
 
         {/* Desktop Actions */}
         <div className="hidden items-center gap-2 md:flex">
-          <Button variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>
+          <Button onClick={() => setIsOpenCart(true)} variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>
             <Heart className="h-5 w-5" />
           </Button>
           <Button variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>

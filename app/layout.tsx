@@ -5,6 +5,8 @@ import './globals.css'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
 import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from '@/context/CartContext'
+import { CartSidebar } from '@/components/carSlideBar'
 
 const cormorant = Cormorant_Garamond({ 
   subsets: ["latin"],
@@ -36,12 +38,15 @@ export default function RootLayout({
     <html lang="es" className={`${cormorant.variable} ${inter.variable} bg-background`}>
       <body className="font-sans antialiased">
         <AuthProvider>
-          <Header />
-          <main className="min-h-screen ">
-            {children}
-          </main>
-          <Footer />
-          {process.env.NODE_ENV === 'production' && <Analytics />}
+          <CartProvider>
+            <Header />
+            <CartSidebar />
+            <main className="min-h-screen ">
+              {children}
+            </main>
+            <Footer />
+            {process.env.NODE_ENV === 'production' && <Analytics />}
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>
