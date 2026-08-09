@@ -39,8 +39,9 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <AuthProvider>
           <CartProvider>
-            <Header />
             <CartSidebar />
+            <Header />
+            
             <main className="min-h-screen ">
               {children}
             </main>

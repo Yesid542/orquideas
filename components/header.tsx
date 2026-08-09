@@ -60,7 +60,7 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300
+      className={`fixed top-0 left-0 w-full z-40 transition-colors duration-300
         ${isOverHero ? "bg-transparent border-transparent" : "bg-white/90 border-b border-border shadow-sm"}`}
     >
       <div className="container mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
@@ -88,10 +88,10 @@ export default function Header() {
 
         {/* Desktop Actions */}
         <div className="hidden items-center gap-2 md:flex">
-          <Button onClick={() => setIsOpenCart(true)} variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>
+          <Button  variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>
             <Heart className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>
+          <Button onClick={() => setIsOpenCart(true)} variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>
             <ShoppingBag className="h-5 w-5" />
           </Button>
           {isAuthenticated ? (
@@ -119,7 +119,7 @@ export default function Header() {
             </DropdownMenu>
           ) : (
             <Link href="/loginPage">
-              <Button className="ml-2 bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button className="ml-2 bg-primary z-4 text-primary-foreground hover:bg-primary/90">
                 Iniciar sesión
               </Button>
             </Link>

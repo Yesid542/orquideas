@@ -9,6 +9,7 @@ import { Search, Filter, Heart, ShoppingBag, Sparkles} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useEffect } from "react"
 import Link from "next/link"
+import { useCart } from "@/context/CartContext";
 
 
 
@@ -163,6 +164,8 @@ const products = [
 export default function CatalogoPage() {
   
   const [elementos, setElementos] = useState<Producto[]>([])
+  const { items, addItem } = useCart();
+  
 
   const fetchProducts = async () => {
     const res = await fetch("/api/media/catalogo")
@@ -177,6 +180,7 @@ export default function CatalogoPage() {
 
   useEffect(() => {
     const loadProducts = async () => {
+      
       const data = await fetchProducts()  
 
       // 👇 aquí asignamos solo la URL al campo image
@@ -198,7 +202,8 @@ export default function CatalogoPage() {
   const [selectedCategory, setSelectedCategory] = useState("todos")
   const [searchQuery, setSearchQuery] = useState("")
   const [favorites, setFavorites] = useState<number[]>([])
-
+  
+  
 
 
   const toggleFavorite = (id: number) => {
@@ -213,7 +218,10 @@ export default function CatalogoPage() {
     .toLowerCase()
     .includes(searchQuery.toLowerCase())
   return matchesCategory && matchesSearch
+  
+
 })
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
@@ -243,6 +251,7 @@ export default function CatalogoPage() {
             {/* Categories */}
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => (
+                
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
@@ -287,9 +296,10 @@ export default function CatalogoPage() {
           </div>
 
          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredProducts.map((product) => (
-              
-                <Link
+            {filteredProducts.map((product) => {
+              const isInCart = items.some((item) => item.name === product.name);
+              return (
+               <Link
                   key={product.id}
                   href={`/catalogoDetail/${product.id}`}
                   className="block"
@@ -353,21 +363,33 @@ export default function CatalogoPage() {
                         )}
                       </div>
                       <Button
-                        size="sm"
-                        className="bg-primary text-primary-foreground hover:bg-primary/90"
-                        onClick={(e) => {
-                          e.preventDefault(); // evita navegación si solo quieres agregar
-                          // lógica de agregar al carrito
-                        }}
-                      >
-                        <ShoppingBag className="mr-1 h-4 w-4" />
-                        Agregar
-                      </Button>
+              size="sm"
+              disabled={isInCart}
+              className={`${
+                isInCart
+                  ? "bg-gray-500 text-white cursor-default"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90"
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                if (!isInCart) {
+                  addItem({
+                    name: product.name,
+                    price: product.price,
+                    description: product.description,
+                  });
+                }
+              }}
+            >
+              <ShoppingBag className="mr-1 h-4 w-4" />
+              {isInCart ? "Agregado" : "Agregar"}
+            </Button>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
-            ))}
+              );
+          })}
           </div>
 
           {filteredProducts.length === 0 && (
@@ -381,4 +403,5 @@ export default function CatalogoPage() {
       </section>
     </div>
   )
+  
 }
