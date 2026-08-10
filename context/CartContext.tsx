@@ -15,6 +15,7 @@ interface CartContextType {
   items: CartItem[];
   setItems: (items: CartItem[]) => void;
   addItem: (item: CartItem) => void; // 👈 nuevo
+  removeItem: (item: CartItem) => void; // 👈 nuevo
 
 }
 
@@ -38,12 +39,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
    const addItem = (item: CartItem) => {
     setItems((prev) => [...prev, item]); // 👈 agrega al array
   };
-   const removeItem = (name: string) => {
-    setItems((prev) => prev.filter((item) => item.name !== name));
-  };
+   const removeItem = (item: CartItem) => {
+  setItems((prev) => prev.filter((i) => i.name !== item.name));
+};
+
 
   return (
-    <CartContext.Provider value={{ isOpenCart, setIsOpenCart, items, setItems, addItem}}>
+    <CartContext.Provider value={{ isOpenCart, setIsOpenCart, items, setItems, addItem, removeItem}}>
       {children}
     </CartContext.Provider>
   );

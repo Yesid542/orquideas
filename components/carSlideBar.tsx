@@ -2,9 +2,10 @@
 
 import { useCart } from "@/context/CartContext";
 import Link from "next/link";
+import { Trash2 } from "lucide-react"; // 👈 importamos el ícono
 
 export function CartSidebar() {
-  const { isOpenCart, setIsOpenCart, items } = useCart();
+  const { isOpenCart, setIsOpenCart, items, removeItem } = useCart();
 
   // Calcular total
   const total = items.reduce((acc, item) => acc + item.price, 0);
@@ -26,9 +27,7 @@ export function CartSidebar() {
 
       {items.length === 0 ? (
         <div className="p-4 text-center">
-          <p className="text-muted-foreground">
-            Tu carrito está vacío 🌸
-          </p>
+          <p className="text-muted-foreground">Tu carrito está vacío 🌸</p>
           <Link
             href="/catalogo"
             className="mt-4 inline-block bg-primary text-white px-4 py-2 rounded hover:bg-primary/90"
@@ -42,12 +41,16 @@ export function CartSidebar() {
             {items.map((item, i) => (
               <li key={i} className="border-b pb-2">
                 <h3 className="font-semibold">{item.name}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {item.description}
-                </p>
-                <span className="text-primary font-bold">
-                  ${item.price}
-                </span>
+                <p className="text-sm text-muted-foreground">{item.description}</p>
+                <div className="flex justify-between items-center mt-1">
+                  <span className="text-primary font-bold">${item.price}</span>
+                  <button
+                     onClick={() => removeItem(item)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

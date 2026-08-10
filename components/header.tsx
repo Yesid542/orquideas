@@ -9,6 +9,7 @@ import { Cookie } from "next/font/google"
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { CartButton } from "./cartButton"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -91,9 +92,7 @@ export default function Header() {
           <Button  variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>
             <Heart className="h-5 w-5" />
           </Button>
-          <Button onClick={() => setIsOpenCart(true)} variant="ghost" size="icon" className={`${isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}`}>
-            <ShoppingBag className="h-5 w-5" />
-          </Button>
+          <CartButton isOverHero={isOverHero} />
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -28,5 +28,5 @@ export function proxy(req: NextRequest) {
 
 // Configurar qué rutas deben pasar por el middleware
 export const config = {
-  matcher: ["/eventos/:path*","/dashboard/:path*"], 
+  matcher: ["/venta/:path*","/dashboard/:path*"], 
 };
