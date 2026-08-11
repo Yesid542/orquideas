@@ -3,11 +3,15 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/dist/client/link";
 import React from "react";
+import { useCart } from "@/context/CartContext";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 
 export default function CatalogoDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params) // ✅ unwrap del Promise en App Router
   const [producto, setProducto] = useState<any[]>([])
+  const { addItem } = useCart();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,9 +33,6 @@ export default function CatalogoDetail({ params }: { params: Promise<{ id: strin
   console.log("Producto state:", producto)
 
   return (  
-
-    
-
     <div className="container mx-auto p-6 mt-20">
 
       {producto.map((product) => (
@@ -63,12 +64,35 @@ export default function CatalogoDetail({ params }: { params: Promise<{ id: strin
           <p className="text-gray-600">{product.descripcion}</p>
           <p className="text-xl font-semibold text-fuchsia-600"> $ {new Intl.NumberFormat("es-CO").format(product.precioBase)} COP </p>
           <div className="flex flex-col gap-3 mt-4">
-            <Button variant="default" size="lg">
-              Comprar Ahora
-            </Button>
-            <Button variant="secondary" size="lg">
-              Agregar al carrito
-            </Button>
+            <Button
+                variant="default"
+                size="lg"
+                onClick={() => {
+                  addItem({
+                    name: product.nombre,
+                    price: product.precioBase,
+                    description: product.descripcion,
+                    quantity: 1,
+                  });
+                  router.push("/venta");
+                }}
+              >
+                Comprar Ahora
+              </Button>
+            <Button
+                variant="secondary"
+                size="lg"
+                onClick={() =>
+                  addItem({
+                    name: product.nombre,
+                    price: product.precioBase,
+                    description: product.descripcion,
+                    quantity: 1,
+                  })
+                }
+              >
+                Agregar al carrito
+              </Button>
             <Link href="/catalogo" className="w-full w-40" >
               <Button variant="outline" size="lg">
                 Volver
