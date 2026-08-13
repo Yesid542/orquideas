@@ -127,9 +127,7 @@ export default function Header() {
 
         {/* Mobile Menu */}
         <div className="flex items-center gap-2 md:hidden">
-          <Button variant="ghost" size="icon" className={isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}>
-            <ShoppingBag className="h-5 w-5" />
-          </Button>
+          <CartButton isOverHero={isOverHero} />
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className={isOverHero ? "text-white hover:text-fuchsia-400" : "text-muted-foreground hover:text-primary"}>
