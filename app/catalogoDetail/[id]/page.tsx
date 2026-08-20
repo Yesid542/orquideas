@@ -62,6 +62,7 @@ export default function CatalogoDetail({ params }: { params: Promise<{ id: strin
 
           <h1 className="text-2xl font-bold text-gray-800 mt-6">{product.nombre}</h1>
           <p className="text-gray-600">{product.descripcion}</p>
+          
           <p className="text-xl font-semibold text-fuchsia-600"> $ {new Intl.NumberFormat("es-CO").format(product.precioBase)} COP </p>
           <div className="flex flex-col gap-3 mt-4">
             <Button

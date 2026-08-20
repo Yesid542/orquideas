@@ -14,6 +14,18 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         id_media,
         url
       )
+      componentes_producto(
+      productoId,
+      cantidadBase,
+      cantidadMin,
+      cantidadMax,
+      florId,
+      flores (
+        idFlores,
+        nombre,
+        color,
+        precioUnitario
+      ))
     `)
     .eq("idProductos", id)
   if (error) {

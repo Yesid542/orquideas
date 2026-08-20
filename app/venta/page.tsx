@@ -2,10 +2,31 @@
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, MapPin, CreditCard } from "lucide-react";
+import { useState } from "react";
 
 export default function CheckoutPage() {
   const { items } = useCart();
   const total = items.reduce((acc, item) => acc + item.price * (item.quantity || 1), 0);
+
+  // 🔹 Estados para dirección
+  const [showModal, setShowModal] = useState(false);
+  const [calle, setCalle] = useState("");
+  const [numero, setNumero] = useState("");
+  const [barrio, setBarrio] = useState("");
+  const [direccionCompleta, setDireccionCompleta] = useState("Calle 123 #45-67, Tunja, Boyacá");
+
+  const handleSaveAddress = async () => {
+    const nuevaDireccion = `${calle} ${numero}, ${barrio}`;
+    setDireccionCompleta(nuevaDireccion);
+    setShowModal(false);
+
+    // 👉 Aquí guardas en tu BD
+    await fetch("/api/save-address", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ direccion: nuevaDireccion }),
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background mt-20 to-secondary/10 p-8">
@@ -36,8 +57,10 @@ export default function CheckoutPage() {
           <MapPin className="text-primary h-5 w-5" />
           <h2 className="text-xl font-semibold">Dirección de entrega</h2>
         </div>
-        <p className="text-muted-foreground">Calle 123 #45-67, Tunja, Boyacá</p>
-        <Button variant="outline" size="sm" className="mt-3">Editar dirección</Button>
+        <p className="text-muted-foreground">{direccionCompleta}</p>
+        <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowModal(true)}>
+          Editar dirección
+        </Button>
       </section>
 
       {/* Método de pago */}
@@ -66,6 +89,44 @@ export default function CheckoutPage() {
       <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg text-lg py-3">
         Confirmar compra
       </Button>
+
+      {/* 🔹 Modal de dirección */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+            <h2 className="text-lg font-bold mb-4">Ingresar dirección</h2>
+
+            <input
+              type="text"
+              placeholder="Calle"
+              value={calle}
+              onChange={(e) => setCalle(e.target.value)}
+              className="w-full border rounded p-2 mb-2"
+            />
+            <input
+              type="text"
+              placeholder="Número"
+              value={numero}
+              onChange={(e) => setNumero(e.target.value)}
+              className="w-full border rounded p-2 mb-2"
+            />
+            <input
+              type="text"
+              placeholder="Barrio"
+              value={barrio}
+              onChange={(e) => setBarrio(e.target.value)}
+              className="w-full border rounded p-2 mb-4"
+            />
+
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowModal(false)}>
+                Cancelar
+              </Button>
+              <Button onClick={handleSaveAddress}>Guardar dirección</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
