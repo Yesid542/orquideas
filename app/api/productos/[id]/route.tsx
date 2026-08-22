@@ -5,31 +5,32 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   const { id } = await params
   const { data, error } = await supabase
     .from("productos")
-    .select(`
-      idProductos,
-      nombre,
-      descripcion,
-      precioBase,
-      media (
-        id_media,
-        url
-      )
-      componentes_producto(
+  .select(`
+    idProductos,
+    nombre,
+    descripcion,
+    precioBase,
+    media (
+      id_media,
+      url
+    ),
+    componentes_producto (
+      idComponentes,
       productoId,
       cantidadBase,
       cantidadMin,
-      cantidadMax,
-      florId,
+      cantidadMax,      
       flores (
         idFlores,
         nombre,
         color,
         precioUnitario
-      ))
-    `)
+      )
+    )
+  `)
     .eq("idProductos", id)
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: 500 }) 
   }
 
   return NextResponse.json(data)
