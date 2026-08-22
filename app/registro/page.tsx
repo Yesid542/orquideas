@@ -104,6 +104,33 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 className="mt-1 w-full border-b-2 border-fuchsia-300 focus:border-fuchsia-600 focus:outline-none bg-transparent py-2"
               />
             </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">Direccion</label>
+              <input
+                type="text"
+                placeholder="Tu nombre"
+                name="name"
+                className="mt-1 w-full border-b-2 border-fuchsia-300 focus:border-fuchsia-600 focus:outline-none bg-transparent py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Ciudad</label>
+              <input
+                type="text"
+                placeholder="Tu ciudad"
+                name="city"
+                className="mt-1 w-full border-b-2 border-fuchsia-300 focus:border-fuchsia-600 focus:outline-none bg-transparent py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Departamento</label>
+              <input
+                type="text"
+                placeholder="departamento"
+                name="department"
+                className="mt-1 w-full border-b-2 border-fuchsia-300 focus:border-fuchsia-600 focus:outline-none bg-transparent py-2"
+              />
+            </div>
 
             <div className="md:col-span-2 flex items-center">
               <input type="checkbox" name="terms" className="h-4 w-4 text-fuchsia-600 border-gray-300 rounded" />
