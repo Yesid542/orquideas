@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowRight, Sparkles, Truck, Shield, Clock } from "lucide-react"
-import BouquetBuilder from "@/components/bouquet-builder"
 import MapInteractive from "@/components/map-interactive"
 import CampaniaModal from "@/components/campaniaModal";
 

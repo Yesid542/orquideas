@@ -15,11 +15,8 @@ import { useCart } from "@/context/CartContext";
 
 const categories = [
   { id: "todos", name: "Todos" },
-  { id: "rosas", name: "Rosas" },
-  { id: "tulipanes", name: "Tulipanes" }, 
-  { id: "girasoles", name: "Girasoles" },
-  { id: "mixtos", name: "Mixtos" },
-  { id: "ocasiones", name: "Ocasiones" },
+  { id: "Boucket", name: "Boucket" },
+  { id: "Orquidea", name: "Orquidea" },
 ]
 
 type Producto = {
@@ -34,132 +31,7 @@ type Producto = {
   isSale: boolean
 } 
 
-/*
-const products = [
-  {
-    id: 1,
-    name: "Romance Eterno",
-    description: "18 rosas rojas premium con cancion de la india y follaje verde + globo",
-    price: 80000,
-    originalPrice: 100000,
-    category: "rosas",
-    image: "./inventario1.png",  
-    isNew: false,
-    isSale: true,
-  },
-  {
-    id: 2,
-    name: "Amanecer Rosado",
-    description: "26 rosas rojas con follaje verde y 6 girasoles",
-    price: 75,
-    category: "rosas",
-    image: "./inventario2.png",
-    isNew: true,
-    isSale: false,
-  },
-  {
-    id: 3,
-    name: "Tulipanes Holandeses",
-    description: "24 tulipanes mixtos importados de Holanda",
-    price: 95,
-    category: "tulipanes",
-    image: "🌷",
-    isNew: false,
-    isSale: false,
-  },
-  {
-    id: 4,
-    name: "Campo de Tulipanes",
-    description: "12 tulipanes blancos con follaje primaveral",
-    price: 55,
-    category: "tulipanes",
-    image: "🌷",
-    isNew: false,
-    isSale: false,
-  },
-  {
-    id: 5,
-    name: "Sol de Verano",
-    description: "12 girasoles grandes con margaritas blancas",
-    price: 65,
-    category: "girasoles",
-    image: "🌻",
-    isNew: false,
-    isSale: false,
-  },
-  {
-    id: 6,
-    name: "Alegría Dorada",
-    description: "8 girasoles mini con astromelias naranjas",
-    price: 48,
-    category: "girasoles",
-    image: "🌻",
-    isNew: true,
-    isSale: false,
-  },
-  {
-    id: 7,
-    name: "Jardín Encantado",
-    description: "Arreglo mixto con rosas, lirios y crisantemos",
-    price: 85,
-    originalPrice: 99,
-    category: "mixtos",
-    image: "💐",
-    isNew: false,
-    isSale: true,
-  },
-  {
-    id: 8,
-    name: "Sinfonía Floral",
-    description: "Combinación elegante de orquídeas y rosas",
-    price: 120,
-    category: "mixtos",
-    image: "🌺",
-    isNew: true,
-    isSale: false,
-  },
-  {
-    id: 9,
-    name: "Feliz Cumpleaños",
-    description: "Arreglo festivo con globos y chocolates",
-    price: 95,
-    category: "ocasiones",
-    image: "🎉",
-    isNew: false,
-    isSale: false,
-  },
-  {
-    id: 10,
-    name: "Te Amo",
-    description: "Corazón de rosas rojas con osito de peluche",
-    price: 135,
-    category: "ocasiones",
-    image: "❤️",
-    isNew: false,
-    isSale: false,
-  },
-  {
-    id: 11,
-    name: "Condolencias",
-    description: "Corona de flores blancas con cinta conmemorativa",
-    price: 150,
-    category: "ocasiones",
-    image: "🕊️",
-    isNew: false,
-    isSale: false,
-  },
-  {
-    id: 12,
-    name: "Bienvenido Bebé",
-    description: "Arreglo pastel con peluche y globos",
-    price: 88,
-    category: "ocasiones",
-    image: "👶",
-    isNew: true,
-    isSale: false,
-  },
-]
-*/
+
 
 export default function CatalogoPage() {
   
@@ -190,10 +62,11 @@ export default function CatalogoPage() {
         name: item.productos?.nombre,
         description: item.productos?.descripcion,
         price: item.productos?.precioBase,
-        category: item.productos?.categoria || "sin-categoria",
+        category: item.productos?.categorias?.nombre || "sin-categoria"
 }))
 
       setElementos(productosConImagen)
+      console.log (productosConImagen)
     }
 
     loadProducts()

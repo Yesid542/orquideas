@@ -1,6 +1,9 @@
 "use client";
-import React, { useEffect } from 'react';
+import React, { useEffect, useState} from 'react';
 export default function RegisterPage() {
+  const [departamentos, setDepartamentos] = useState<any[]>([]);
+  const [municipios, setMunicipios] = useState<any[]>([]);
+  const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState("");
 
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
@@ -15,13 +18,31 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     terms: formData.get("terms") !== null, // true/false
   };
 
-  console.log("Datos del formulario:", data);
+  useEffect(() => {
+    const fetchDepartamentos = async () => {
+      const response = await fetch("/api/ubicacion/departamentos");
+      const datos = await response.json(); 
+      console.log (datos)
+      setDepartamentos(datos || []);
+
+    };
+    fetchDepartamentos();
+  }, []);
+  useEffect(() => {
+    const fetchMunicipios = async () => {
+      if (!departamentoSeleccionado) return;
+      const respuesta = await fetch(`/api/ubicacion/municipios/${departamentoSeleccionado}`);
+      const datos = await respuesta.json();
+      setMunicipios(datos || []);
+    };
+    fetchMunicipios();
+  }, [departamentoSeleccionado]);
 
   // Enviar al backend
   const response = await fetch("/api/users", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data), // 👈 
+    body: JSON.stringify(data), // 
   });
 
   const result = await response.json();
@@ -104,6 +125,32 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 className="mt-1 w-full border-b-2 border-fuchsia-300 focus:border-fuchsia-600 focus:outline-none bg-transparent py-2"
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Departamento</label>
+              <select
+                value={departamentoSeleccionado}
+                onChange={(e) => setDepartamentoSeleccionado(e.target.value)}
+              >
+                <option value="">-- Selecciona --</option>
+                {departamentos.map((dep) => (
+                  <option key={dep.codigo} value={dep.codigo}>
+                    {dep.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Ciudad</label>
+              <select>
+                <option value="">-- Selecciona --</option>
+                {municipios.map((mun) => (
+                  <option key={mun.codigo} value={mun.codigo}>
+                    {mun.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700">Direccion</label>
               <input
@@ -113,25 +160,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 className="mt-1 w-full border-b-2 border-fuchsia-300 focus:border-fuchsia-600 focus:outline-none bg-transparent py-2"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Ciudad</label>
-              <input
-                type="text"
-                placeholder="Tu ciudad"
-                name="city"
-                className="mt-1 w-full border-b-2 border-fuchsia-300 focus:border-fuchsia-600 focus:outline-none bg-transparent py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Departamento</label>
-              <input
-                type="text"
-                placeholder="departamento"
-                name="department"
-                className="mt-1 w-full border-b-2 border-fuchsia-300 focus:border-fuchsia-600 focus:outline-none bg-transparent py-2"
-              />
-            </div>
-
+            
             <div className="md:col-span-2 flex items-center">
               <input type="checkbox" name="terms" className="h-4 w-4 text-fuchsia-600 border-gray-300 rounded" />
               <span className="ml-2 text-sm text-gray-600">

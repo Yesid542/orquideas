@@ -18,8 +18,7 @@ export async function GET() {
       )
     `)
     .eq("tipo", "img") // condición fija
-    .not("idProductos", "is", null) // join hacia eventos
-    .eq("productos.categorias.nombre", "Bouquet") // join hacia categorías  
+    .not("idProductos", "is", null) // join hacia eventos  
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
