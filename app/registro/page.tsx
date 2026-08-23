@@ -13,16 +13,36 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     name: formData.get("name"),
     email: formData.get("email"),
     password: formData.get("password"),
+    address:formData.get("direccion"),
+    state:formData.get("departamento"),
+    city:formData.get("municipio"),
     confirmPassword: formData.get("confirmPassword"),
     phone: formData.get("phone"),
     terms: formData.get("terms") !== null, // true/false
   };
 
+  const response = await fetch("/api/users/registro", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data), // 
+  });
+
+
+  const result = await response.json();
+  if (!response.ok) {
+    console.error("Error en la respuesta del servidor:", result);
+    alert(`Error: ${result.error}`);
+    return;
+  }else{
+    alert("Registro exitoso! Por favor, verifica tu correo electrónico para activar tu cuenta.");
+    e.currentTarget.reset();
+  }
+};
+
   useEffect(() => {
     const fetchDepartamentos = async () => {
       const response = await fetch("/api/ubicacion/departamentos");
       const datos = await response.json(); 
-      console.log (datos)
       setDepartamentos(datos || []);
 
     };
@@ -39,21 +59,6 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   }, [departamentoSeleccionado]);
 
   // Enviar al backend
-  const response = await fetch("/api/users", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data), // 
-  });
-
-  const result = await response.json();
-  if (!response.ok) {
-    console.error("Error en la respuesta del servidor:", result);
-    alert(`Error: ${result.error}`);
-    return;
-  }else{
-    alert("Registro exitoso! Por favor, verifica tu correo electrónico para activar tu cuenta.");
-  }
-};
 
   
   return (
@@ -130,8 +135,9 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               <select
                 value={departamentoSeleccionado}
                 onChange={(e) => setDepartamentoSeleccionado(e.target.value)}
+                name="departamento"
               >
-                <option value="">-- Selecciona --</option>
+                <option>-- Selecciona --</option>
                 {departamentos.map((dep) => (
                   <option key={dep.codigo} value={dep.codigo}>
                     {dep.nombre}
@@ -142,7 +148,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">Ciudad</label>
-              <select>
+              <select name='municipio'>
                 <option value="">-- Selecciona --</option>
                 {municipios.map((mun) => (
                   <option key={mun.codigo} value={mun.codigo}>
@@ -155,8 +161,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               <label className="block text-sm font-medium text-gray-700">Direccion</label>
               <input
                 type="text"
-                placeholder="Tu nombre"
-                name="name"
+                placeholder="Cll/Cr #"
+                name="direccion"
                 className="mt-1 w-full border-b-2 border-fuchsia-300 focus:border-fuchsia-600 focus:outline-none bg-transparent py-2"
               />
             </div>

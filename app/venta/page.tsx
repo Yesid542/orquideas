@@ -2,18 +2,29 @@
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, MapPin, CreditCard } from "lucide-react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 export default function CheckoutPage() {
   const { items } = useCart();
   const total = items.reduce((acc, item) => acc + item.price * (item.quantity || 1), 0);
-
   // 🔹 Estados para dirección
   const [showModal, setShowModal] = useState(false);
   const [calle, setCalle] = useState("");
   const [numero, setNumero] = useState("");
   const [barrio, setBarrio] = useState("");
-  const [direccionCompleta, setDireccionCompleta] = useState("Calle 123 #45-67, Tunja, Boyacá");
+  const [direccionCompleta, setDireccionCompleta] = useState("");
+
+  useEffect(() => {
+  const datosUsuario = async () => {
+    const response = await fetch("/api/users/clientes");
+    const datos = await response.json(); 
+
+    // ✅ Guarda solo la dirección, no el objeto completo
+    const direccionCompleta = `${datos.usuario?.direccion || ""}, ${datos.usuario?.municipios?.nombre || ""}, ${datos.usuario?.departamentos?.nombre || ""}`;
+    setDireccionCompleta(direccionCompleta);
+  };
+  datosUsuario();
+}, []);
 
   const handleSaveAddress = async () => {
     const nuevaDireccion = `${calle} ${numero}, ${barrio}`;

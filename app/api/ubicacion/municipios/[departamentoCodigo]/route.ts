@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server"
-import { supabase } from "../../../database/supabaseClient"
+import { NextResponse } from "next/server";
+import { supabase } from "../../../../database/supabaseClient";
 
 export async function GET(
   request: Request,
-  { params }: { params: { departamentoCodigo: string } }
+  context: { params: Promise<{ departamentoCodigo: string }> }
 ) {
-  const { departamentoCodigo } = params;
+  // 👇 Aquí se hace el await porque params es una Promise
+  const { departamentoCodigo } = await context.params;
 
-  // Consulta municipios filtrados por departamento
   const { data, error } = await supabase
     .from("municipios")
     .select("codigo, nombre")

@@ -26,11 +26,11 @@ export async function POST(req: Request) {
   try {
     // 1. Recibir el body en JSON
     const body = await req.json();
-    const { name, email, password, phone } = body;
+    const { name, email, password, phone, address, state, city } = body;
 
     // 2. Crear usuario en Supabase Auth
     const { data: user, error: authError } = await supabase.auth.signUp({
-      email,
+      email, 
       password,
     });
 
@@ -43,12 +43,16 @@ export async function POST(req: Request) {
     // id (PK), user_id (uuid), nombre (text), telefono (text), email (text)
     const { data, error } = await supabase
       .from("clientes")
+
+
       .insert([
         {
           user_id: user.user?.id, // relacionar con auth.users
           nombre: name,
           telefono: phone,
-
+          codigoDepartamento:state,
+          codigoMunicipio:city,
+          direccion:address
         },
       ]);
 

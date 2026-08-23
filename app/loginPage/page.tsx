@@ -32,6 +32,9 @@ export default function LoginPage() {
       if (result.error=="Invalid login credentials") {
         setRespuesta(`Revise su correo o contraseña suministrados`);
       }
+      if(result.error=="Email not confirmed") {
+        setRespuesta(`Por favor confirme su email al momento de registrarse.`);
+      }
       return;
     }
     login();
