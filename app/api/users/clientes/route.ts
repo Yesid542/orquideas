@@ -14,14 +14,8 @@ export async function GET(req: Request) {
 
     // Buscar datos del usuario en tu tabla
     const { data, error } = await supabase
-      .from("clientes")
-      .select(`
-        direccion,
-        municipios(
-            nombre),
-        departamentos(
-            nombre)
-        `)
+      .from("clientes_con_email")
+      .select("*")
       .eq("user_id", decoded.user_id)
       .single();
 

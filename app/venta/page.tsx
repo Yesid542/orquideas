@@ -13,15 +13,20 @@ export default function CheckoutPage() {
   const [numero, setNumero] = useState("");
   const [barrio, setBarrio] = useState("");
   const [direccionCompleta, setDireccionCompleta] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
   const datosUsuario = async () => {
     const response = await fetch("/api/users/clientes");
     const datos = await response.json(); 
+    console.log("Datos del usuario:", datos); // 🔹 Verifica los datos recibidos
 
     // ✅ Guarda solo la dirección, no el objeto completo
-    const direccionCompleta = `${datos.usuario?.direccion || ""}, ${datos.usuario?.municipios?.nombre || ""}, ${datos.usuario?.departamentos?.nombre || ""}`;
+    const direccionCompleta = `${datos.usuario?.direccion || ""}, ${datos.usuario?.municipio || ""}, ${datos.usuario?.departamento || ""}`;
     setDireccionCompleta(direccionCompleta);
+    const email = `${datos.usuario?.email || ""}`;
+    setEmail(email);
+    
   };
   datosUsuario();
 }, []);
@@ -37,8 +42,35 @@ export default function CheckoutPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ direccion: nuevaDireccion }),
     });
-  };
 
+  };
+     const handleCheckout = async () => {
+  // 🔹 Calcular el total dinámicamente
+  const total = items.reduce(
+    (acc, item) => acc + item.price * (item.quantity || 1),
+    0
+  );
+
+  // 🔹 Crear la transacción en tu backend
+  const response = await fetch("/api/pago", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    amount_in_cents: total * 100, // en centavos
+    currency: "COP",
+    customer_email: email,
+    reference: `pedido-${Date.now()}`,
+    redirect_url: "https://orquideas-teal.vercel.app/catalogo", // URL a la que redirigir después del pago
+  }),
+});
+
+const data = await response.json();
+if (data.checkout_url) {
+  window.location.href = data.checkout_url;
+} else {
+  console.error("Error creando transacción:", data);
+}
+}
   return (
     <div className="min-h-screen bg-gradient-to-b from-background mt-20 to-secondary/10 p-8">
       <h1 className="text-3xl font-serif font-bold mb-8 text-center text-primary">
@@ -97,7 +129,7 @@ export default function CheckoutPage() {
       </section>
 
       {/* Confirmar */}
-      <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg text-lg py-3">
+      <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg text-lg py-3" onClick={handleCheckout}>
         Confirmar compra
       </Button>
 
