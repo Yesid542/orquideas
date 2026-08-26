@@ -1,29 +1,35 @@
 import { NextResponse } from "next/server";
+const mercadopago = require("mercadopago");
+
+mercadopago.configure({
+  access_token: process.env.MP_ACCESS_TOKEN!,
+});
 
 export async function POST(req: Request) {
-  const { amount_in_cents, currency, customer_email, reference, redirect_url } = await req.json();
+  const body = await req.json();
 
-  const response = await fetch("https://sandbox.wompi.co/v1/transactions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.WOMPI_PRIVATE_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      amount_in_cents,
-      currency,
-      customer_email,
-      reference,
-      redirect_url,
-    }),
-  });
+  try {
+    const preference = await mercadopago.preferences.create({
+      items: body.items.map((item: any) => ({
+        title: item.name,
+        quantity: item.quantity,
+        unit_price: item.price,
+        currency_id: "COP",
+      })),
+      payer: {
+        email: body.email,
+      },
+      back_urls: {
+        success: `https://orquideas-teal.vercel.app/success`,
+        failure: `https://orquideas-teal.vercel.app/failure`,
+        pending: `https://orquideas-teal.vercel.app/pending`,
+        
+      },
+      auto_return: "approved",
+    });
 
-  const data = await response.json();
-
-  if (!response.ok || !data?.data?.checkout_url) {
-    console.error("Error creando transacción en Wompi:", data);
-    return NextResponse.json({ error: data }, { status: response.status });
+    return NextResponse.json({ checkout_url: preference.body.init_point });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
-
-  return NextResponse.json({ checkout_url: data.data.checkout_url });
 }

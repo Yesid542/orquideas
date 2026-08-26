@@ -44,33 +44,30 @@ export default function CheckoutPage() {
     });
 
   };
-     const handleCheckout = async () => {
-  // 🔹 Calcular el total dinámicamente
-  const total = items.reduce(
-    (acc, item) => acc + item.price * (item.quantity || 1),
-    0
-  );
+  const handleCheckout = async () => {
+  const lineItems = items.map((item) => ({
+    name: item.name,
+    price: item.price,
+    quantity: item.quantity || 1,
+  }));
 
-  // 🔹 Crear la transacción en tu backend
   const response = await fetch("/api/pago", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    amount_in_cents: total * 100, // en centavos
-    currency: "COP",
-    customer_email: email,
-    reference: `pedido-${Date.now()}`,
-    redirect_url: "https://orquideas-teal.vercel.app/catalogo", // URL a la que redirigir después del pago
-  }),
-});
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      items: lineItems,
+      email,
+    }),
+  });
 
-const data = await response.json();
-if (data.checkout_url) {
-  window.location.href = data.checkout_url;
-} else {
-  console.error("Error creando transacción:", data);
-}
-}
+  const data = await response.json();
+  if (data.checkout_url) {
+    window.location.href = data.checkout_url; // 🔹 redirige a Mercado Pago
+  } else {
+    alert("Error creando preferencia de pago: " + data.error);
+  }
+};
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background mt-20 to-secondary/10 p-8">
       <h1 className="text-3xl font-serif font-bold mb-8 text-center text-primary">
