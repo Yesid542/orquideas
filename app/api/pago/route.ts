@@ -7,29 +7,27 @@ mercadopago.configure({
 
 export async function POST(req: Request) {
   const body = await req.json();
+  const { items, email } = body;
 
-  try {
-    const preference = await mercadopago.preferences.create({
-      items: body.items.map((item: any) => ({
-        title: item.name,
-        quantity: item.quantity,
-        unit_price: item.price,
-        currency_id: "COP",
-      })),
-      payer: {
-        email: body.email,
-      },
-      back_urls: {
-        success: `https://orquideas-teal.vercel.app/success`,
-        failure: `https://orquideas-teal.vercel.app/failure`,
-        pending: `https://orquideas-teal.vercel.app/pending`,
-        
-      },
-      auto_return: "approved",
-    });
+  const preference = {
+    items: items.map((item: any) => ({
+      title: item.name,
+      unit_price: item.price,
+      quantity: item.quantity,
+    })),
+    payer: { email },
+    back_urls: {
+      success: `https://orquideas-teal.vercel.app/success`,
+      failure: `https://orquideas-teal.vercel.app/failure`,
+      pending: `https://orquideas-teal.vercel.app/pending`,
+    },
+    auto_return: "approved",
+  };
 
-    return NextResponse.json({ checkout_url: preference.body.init_point });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
+  const result = await mercadopago.preferences.create(preference);
+
+  return new Response(
+    JSON.stringify({ checkout_url: result.body.init_point }),
+    { status: 200 }
+  );
 }
