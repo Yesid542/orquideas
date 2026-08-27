@@ -12,36 +12,26 @@ export default function LoginPage() {
   const [respuesta, setRespuesta ] = useState<string | null>(null);     
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-  
-    const data = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-    };
-    
-    // Enviar al backend
-    const response = await fetch("/api/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data), // 👈 
-    });
-  
-    const result = await response.json();
-    if (!response.ok) {
-      console.error("Error en la respuesta del servidor:", result);
-      if (result.error=="Invalid login credentials") {
-        setRespuesta(`Revise su correo o contraseña suministrados`);
-      }
-      if(result.error=="Email not confirmed") {
-        setRespuesta(`Por favor confirme su email al momento de registrarse.`);
-      }
-      return;
-    }
-    login();
-    router.push(redirect);
-  };
+  e.preventDefault();
+  const formData = new FormData(e.currentTarget);
+  const data = { email: formData.get("email"), password: formData.get("password") };
 
+  const response = await fetch("/api/users/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include", // <- crítico
+    body: JSON.stringify(data),
+  });
+
+  const result = await response.json();
+  if (!response.ok) {
+    // manejar errores...
+    return;
+  }
+
+  await login(); // login() debe confirmar la sesión consultando /api/me
+  router.push(redirect);
+};
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-green-50">
       <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">

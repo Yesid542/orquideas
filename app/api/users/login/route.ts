@@ -1,3 +1,4 @@
+// app/api/users/login/route.ts (o donde tengas el handler)
 import { NextResponse } from "next/server";
 import { supabase } from "../../../database/supabaseClient";
 import jwt from "jsonwebtoken";
@@ -7,47 +8,28 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { email, password } = body;
 
-    // 1. Autenticación con Supabase
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error || !data?.user) {
-      return NextResponse.json(
-        { error: error?.message || "Credenciales inválidas" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: error?.message || "Credenciales inválidas" }, { status: 400 });
     }
 
-    // 2. Generar token seguro en el backend
-    const token = jwt.sign(
-      { user_id: data.user.id },
-      process.env.JWT_SECRET!, // clave secreta en variable de entorno
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ user_id: data.user.id }, process.env.JWT_SECRET!, { expiresIn: "1h" });
 
-    // 3. Crear respuesta y setear cookie
-    const response = NextResponse.json({
-      success: true,
-      user: data.user,
-      session: data.session,
-    });
+    const response = NextResponse.json({ success: true, user: data.user, session: data.session });
 
+    const isProd = process.env.NODE_ENV === "production";
     response.cookies.set("token", token, {
-      httpOnly: true, // no accesible desde JS
-      secure: process.env.NODE_ENV === "production", // true en prod, false en dev
-      sameSite: "lax", // más flexible que strict
-      path: "/",       // disponible en toda la app
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax", // <- importante: 'none' en prod
+      path: "/",
       maxAge: 60 * 60, // 1 hora
     });
 
-    // 4. Retornar la respuesta con cookie incluida
     return response;
-
   } catch (err: any) {
     console.error("Error en login:", err);
     return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }
 }
-
