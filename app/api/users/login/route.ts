@@ -13,14 +13,17 @@ export async function POST(req: Request) {
       password,
     });
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    if (error || !data?.user) {
+      return NextResponse.json(
+        { error: error?.message || "Credenciales inválidas" },
+        { status: 400 }
+      );
     }
 
     // 2. Generar token seguro en el backend
     const token = jwt.sign(
       { user_id: data.user.id },
-      process.env.JWT_SECRET!, // usa variable de entorno
+      process.env.JWT_SECRET!, // clave secreta en variable de entorno
       { expiresIn: "1h" }
     );
 
@@ -43,9 +46,8 @@ export async function POST(req: Request) {
     return response;
 
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error("Error en login:", err);
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }
 }
-
-
 
