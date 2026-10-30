@@ -13,7 +13,8 @@ export async function GET(req: Request) {
     try {
       const payload = jwt.verify(token, process.env.JWT_SECRET!);
       return NextResponse.json({ authenticated: true, user: payload });
-    } catch {
+    } catch (err) {
+      console.log("Token inválido o expirado:", err);
       return NextResponse.json({ authenticated: false });
     }
   } catch (err) {

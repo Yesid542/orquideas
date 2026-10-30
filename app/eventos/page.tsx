@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import Link from "next/link"
 import { Label } from "@/components/ui/label"
 import { 
   Select,
@@ -25,7 +26,7 @@ import {
   CheckCircle,
   Phone,
   Mail,
-  MapPin
+  MapPin,
 } from "lucide-react"
 
 type Eventos = {
@@ -294,29 +295,32 @@ export default function EventosPage() {
               Algunos de nuestros trabajos más recientes
             </p>
           </div>
-
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {gallery.map((item) => (
-              <div
-                key={item.id}
-                className="group relative overflow-hidden rounded-xl bg-secondary/30"
-              >
-                <div className="flex h-64 items-center justify-center text-8xl transition-transform group-hover:scale-110">
-                  {item.image}
-                </div>
-                <div className="absolute inset-0 flex items-end bg-gradient-to-t from-foreground/60 to-transparent p-4 opacity-0 transition-opacity group-hover:opacity-100">
-                  <div>
-                    <Badge className="mb-2 bg-primary text-primary-foreground">
-                      {item.category}
-                    </Badge>
-                    <p className="text-sm font-medium text-primary-foreground">
-                      {item.description}
-                    </p>
+         
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {gallery.map((item) => (
+                <Link href={`/mosaico?album=${item.category}`}>
+                <div
+                  key={item.id}
+                  className="group relative overflow-hidden rounded-xl bg-secondary/30"
+                >
+                 <div className="flex h-64 items-center justify-center text-8xl transition-transform group-hover:scale-110">
+                    {item.image}
+                  </div>
+                  <div className="absolute inset-0 flex items-end bg-gradient-to-t from-foreground/60 to-transparent p-4 opacity-0 transition-opacity group-hover:opacity-100">
+                    <div>
+                      <Badge className="mb-2 bg-primary text-primary-foreground">
+                        {item.category}
+                      </Badge>
+                      <p className="text-sm font-medium text-primary-foreground">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+                </Link> 
+              ))}
+            </div>
+            
         </div>
       </section>
 

@@ -2,30 +2,38 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 
-export function proxy(req: NextRequest) {
-  // Leer la cookie "token"
-  const token = req.cookies.get("token")?.value;
+export async function proxy(req: NextRequest) {
+  const url = req.nextUrl.clone();
+  const pathname = url.pathname;
 
-  // Si no hay token, redirigir al login
-  if (!token) {
-    console.log("No token found, redirecting to loginPage");
-    return NextResponse.redirect(new URL(`/loginPage?redirect=${req.nextUrl.pathname}`, req.url));
+  // Rutas que quieres proteger
+  const protectedPaths = ["/checkout", "/checkout/*", "/orders", "/api/checkout"];
+
+  const isProtected = protectedPaths.some(p => {
+    if (p.endsWith("/*")) return pathname.startsWith(p.replace("/*", ""));
+    return pathname === p;
+  });
+
+  if (!isProtected) return NextResponse.next();
+
+  const cookie = req.cookies.get("token")?.value || null;
+  if (!cookie) {
+    // redirige a login con redirect
+    url.pathname = "/login";
+    url.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(url);
   }
 
   try {
-    // Verificar el token
-    jwt.verify(token, process.env.JWT_SECRET!);
-    console.log("Token is valid, allowing access to the requested page");
-    // Si es válido, dejar pasar la request
+    jwt.verify(cookie, process.env.JWT_SECRET!);
     return NextResponse.next();
-  } catch (err) {
-    console.log("Invalid or expired token, redirecting to loginPage");
-    // Si el token es inválido o expiró, redirigir al login
-    return NextResponse.redirect(new URL("/loginPage", req.url));
+  } catch {
+    url.pathname = "/login";
+    url.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(url);
   }
 }
 
-// Configurar qué rutas deben pasar por el middleware
 export const config = {
-  matcher: ["/venta/:path*"], 
+  matcher: ["/venta/:path*","/checkout/:path*", "/orders/:path*", "/api/venta/:path*"],
 };

@@ -1,17 +1,15 @@
+// app/api/users/logout/route.ts
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  // Crear respuesta
+export async function POST() {
   const response = NextResponse.json({ success: true });
-
-  // Borrar la cookie "token"
+  const isProd = process.env.NODE_ENV === "production";
   response.cookies.set("token", "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
     path: "/",
-    maxAge: 0, // expira inmediatamente
+    maxAge: 0,
   });
-
   return response;
 }
