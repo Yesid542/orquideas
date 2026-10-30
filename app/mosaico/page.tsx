@@ -1,32 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { log } from "console";
 
 type Imagen = {
   id: string;
   url: string;
   nombre: string;
   isContent: boolean;
-   eventos?: {
+  eventos?: {
     idEventos: string;
     nombre: string;
     descripcion: string;
   };
 };
 
-export default function MosaicoPage() {
+function MosaicoContent() {
   const [imagenesMosaico, setImagenesMosaico] = useState<Imagen[]>([]);
   const searchParams = useSearchParams();
-  const albumNombre = searchParams.get("album"); // 👈 aquí recibes el nombre
+  const albumNombre = searchParams.get("album");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/media/mosaico"); 
+        const res = await fetch("/api/media/mosaico");
         const data: Imagen[] = await res.json();
-        console.log(data)
         setImagenesMosaico(data);
       } catch (err) {
         console.error("Error cargando imágenes:", err);
@@ -35,10 +33,9 @@ export default function MosaicoPage() {
     fetchData();
   }, []);
 
-  // Filtrar solo las imágenes que deben aparecer en el mosaico y que pertenecen al álbum recibido
   const imagenesFiltradas = imagenesMosaico.filter(
-  (img) => img.isContent && img.eventos?.nombre === albumNombre
-);
+    (img) => img.isContent && img.eventos?.nombre === albumNombre
+  );
 
   return (
     <main className="min-h-screen bg-pink-50">
@@ -64,5 +61,13 @@ export default function MosaicoPage() {
         ))}
       </section>
     </main>
+  );
+}
+
+export default function MosaicoPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Cargando...</div>}>
+      <MosaicoContent />
+    </Suspense>
   );
 }
