@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabase } from "../../database/supabaseClient"
 
 // GET: Carga comprobantes sin asignar y pedidos pendientes
+// GET en app/api/dashboard/route.ts
 export async function GET() {
   try {
     const { data: comprobantes, error: errComp } = await supabase
@@ -9,19 +10,19 @@ export async function GET() {
       .select('*')
       .eq('estado', 'SIN_ASIGNAR')
       .order('created_at', { ascending: false });
-      console.log('Comprobantes obtenidos:', comprobantes);
+
     if (errComp) throw errComp;
 
     const { data: pedidos, error: errPed } = await supabase
       .from('pedidos')
       .select('*')
       .eq('estado_pago', 'PENDIENTE')
-    console.log('Pedidos obtenidos:', pedidos);
+
     if (errPed) throw errPed;
 
     return NextResponse.json({ comprobantes, pedidos }, { status: 200 });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message || error }, { status: 500 });
   }
 }
 

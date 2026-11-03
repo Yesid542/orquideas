@@ -25,6 +25,8 @@ interface Comprobante {
 interface Pedido {
   idPedidos: string;
   created_at: string;
+  titulo: string;
+  descripcion: string;
   precioTotal: number;
   metodo_pago: string;
   estado_pago: string;
@@ -260,36 +262,39 @@ export default function DashboardConciliacion() {
                   </div>
                 ) : (
                   pedidos.map((ped) => (
-                    <div
-                      key={ped.idPedidos}
-                      onClick={() => setSelectedPedido(selectedPedido === ped.idPedidos ? null : ped.idPedidos)}
-                      className={`p-4 rounded-xl border transition cursor-pointer flex items-center justify-between ${
-                        selectedPedido === ped.idPedidos
-                          ? 'border-pink-500 bg-pink-50/60 ring-2 ring-pink-400/20'
-                          : 'border-slate-100 hover:border-pink-200 bg-white'
-                      }`}
-                    >
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-extrabold text-slate-800 text-base">
-                            ${ped.precioTotal.toLocaleString('es-CO')}
-                          </span>
-                          <span className="text-[10px] bg-pink-100 text-pink-700 px-2 py-0.5 rounded font-medium">
-                            {ped.local_origen || 'LOCAL_2'}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-400 font-mono">
-                          ID: {ped.idPedidos.substring(0, 8)}...
-                        </p>
-                      </div>
+  <div
+    key={ped.idPedidos}
+    onClick={() => setSelectedPedido(selectedPedido === ped.idPedidos ? null : ped.idPedidos)}
+    className={`p-4 rounded-xl border transition cursor-pointer flex items-center justify-between ${
+      selectedPedido === ped.idPedidos
+        ? 'border-pink-500 bg-pink-50/60 ring-2 ring-pink-400/20'
+        : 'border-slate-100 hover:border-pink-200 bg-white'
+    }`}
+  >
+    <div className="space-y-1 max-w-[70%]">
+      <h4 className="font-bold text-slate-800 text-sm truncate">
+        {ped.titulo || 'Pedido sin título'}
+      </h4>
+      {ped.descripcion && (
+        <p className="text-xs text-slate-500 line-clamp-1">{ped.descripcion}</p>
+      )}
+      <div className="flex items-center gap-2 pt-1">
+        <span className="font-extrabold text-pink-600 text-sm">
+          ${ped.precioTotal ? ped.precioTotal.toLocaleString('es-CO') : 'Por definir'}
+        </span>
+        <span className="text-[10px] bg-pink-100 text-pink-700 px-2 py-0.5 rounded font-medium">
+          {ped.local_origen || 'LOCAL_1'}
+        </span>
+      </div>
+    </div>
 
-                      <div className="text-right">
-                        <span className="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-600 border border-amber-200">
-                          PENDIENTE
-                        </span>
-                      </div>
-                    </div>
-                  ))
+    <div className="text-right shrink-0">
+      <span className="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-600 border border-amber-200">
+        PENDIENTE
+      </span>
+    </div>
+  </div>
+))
                 )}
               </div>
             </div>
