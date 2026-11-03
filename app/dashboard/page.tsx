@@ -44,10 +44,11 @@ export default function DashboardConciliacion() {
     setLoading(true);
     try {
       const res = await fetch('/api/dashboard');
+      console.log('Respuesta de /api/dashboard:', res);
       if (!res.ok) throw new Error('Error al cargar datos del backend');
       
       const data = await res.json();
-      console.log(data)
+      
       setComprobantes(data.comprobantes || []);
       setPedidos(data.pedidos || []);
     } catch (error) {

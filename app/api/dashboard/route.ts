@@ -9,14 +9,14 @@ export async function GET() {
       .select('*')
       .eq('estado', 'SIN_ASIGNAR')
       .order('created_at', { ascending: false });
+      console.log('Comprobantes obtenidos:', comprobantes);
     if (errComp) throw errComp;
 
     const { data: pedidos, error: errPed } = await supabase
       .from('pedidos')
       .select('*')
       .eq('estado_pago', 'PENDIENTE')
-      .order('created_at', { ascending: false });
-
+    console.log('Pedidos obtenidos:', pedidos);
     if (errPed) throw errPed;
 
     return NextResponse.json({ comprobantes, pedidos }, { status: 200 });
@@ -42,6 +42,7 @@ export async function POST(request: Request) {
       p_id_comprobante: idComprobante,
       p_id_pedido: idPedido,
     });
+    console.log('Resultado de la función RPC:', { error });
 
     if (error) throw error;
 
